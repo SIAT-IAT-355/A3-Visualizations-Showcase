@@ -20,6 +20,79 @@ async function render() {
     const view = result.view;
     view.run();
   });
+
+
+  // Visualization 1: Global Sales by Genre and Platform
+  const vlSpec1 = vl
+    .markBar()
+    .data(data)
+    .encode(
+      vl.y().fieldN("Platform").sort("-x"),
+      vl.x().fieldQ("Global_Sales").aggregate("sum"),
+      vl.color().fieldN("Genre")
+    )
+    .width(800)
+    .height(400)
+    .toSpec();
+
+  vegaEmbed("#view1", vlSpec1).then((result) => {
+    result.view.run();
+  });
+
+  // Visualization 2: Sales Over Time by Platform and Genre
+  const vlSpec2 = vl
+    .markLine()
+    .data(data)
+    .encode(
+      vl.x().fieldT("Year"),
+      vl.y().fieldQ("Global_Sales").aggregate("sum"),
+      vl.color().fieldN("Platform")
+    )
+    .width(800)
+    .height(400)
+    .toSpec();
+
+  vegaEmbed("#view2", vlSpec2).then((result) => {
+    result.view.run();
+  });
+
+  // Visualization 3: Regional Sales vs Platform
+  const vlSpec3 = vl
+    .markBar()
+    .data(data)
+    .encode(
+      vl.x().fieldN("Platform").sort("-x"),
+      vl.y().fieldQ("NA_Sales").aggregate("sum").title("Sales in Millions"),
+      vl.color().fieldN("Platform")
+    )
+    .width(800)
+    .height(400)
+    .toSpec();
+
+  vegaEmbed("#view3", vlSpec3).then((result) => {
+    result.view.run();
+  });
+
+  // Visualization 4: Japan Sales by Genre
+  const vlSpec4 = vl
+    .markBar({ color: "purple" })
+    .data(data)
+    .encode(
+      vl.x().fieldN("Genre"),
+      vl.y().fieldQ("JP_Sales").aggregate("sum")
+    )
+    .width(800)
+    .height(400)
+    .toSpec();
+
+  vegaEmbed("#view4", vlSpec4).then((result) => {
+    result.view.run();
+  });
+
+
+
+
 }
 
 render();
+ 
