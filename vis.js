@@ -5,6 +5,7 @@ async function render() {
   const data = await d3.csv("./dataset/videogames_wide.csv");
 
   // create a bar chart
+  /*
   const vlSpec = vl
     .markBar()
     .data(data)
@@ -20,9 +21,10 @@ async function render() {
     const view = result.view;
     view.run();
   });
-
+*/
 
   // Visualization 1: Global Sales by Genre and Platform
+  /*
   const vlSpec1 = vl
     .markBar()
     .data(data)
@@ -38,8 +40,25 @@ async function render() {
   vegaEmbed("#view1", vlSpec1).then((result) => {
     result.view.run();
   });
+*/
+  const vlSpec1 = vl
+  .markBar()
+  .data(data)
+  .encode(
+    vl.x().fieldN("Genre").sort("-y").title("Genre"),
+    vl.y().fieldQ("Global_Sales").aggregate("sum").title("Global Sales (in millions)"),
+    vl.color().fieldN("Platform").title("Platform")
+  )
+  .width(800)
+  .height(400)
+  .toSpec();
+
+  vegaEmbed("#view1", vlSpec1).then((result) => {
+  result.view.run();
+  });
 
   // Visualization 2: Sales Over Time by Platform and Genre
+  /*
   const vlSpec2 = vl
     .markLine()
     .data(data)
@@ -54,9 +73,27 @@ async function render() {
 
   vegaEmbed("#view2", vlSpec2).then((result) => {
     result.view.run();
+  });*/
+
+  const vlSpec2 = vl
+  .markLine()
+  .data(data)
+  .encode(
+    vl.x().fieldT("Year").title("Year"),
+    vl.y().fieldQ("Global_Sales").aggregate("sum").title("Global Sales (in millions)"),
+    vl.color().fieldN("Platform").title("Platform"),
+    vl.detail().fieldN("Genre").title("Genre")
+  )
+  .width(800)
+  .height(400)
+  .toSpec();
+
+  vegaEmbed("#view2", vlSpec2).then((result) => {
+    result.view.run();
   });
 
   // Visualization 3: Regional Sales vs Platform
+  /*
   const vlSpec3 = vl
     .markBar()
     .data(data)
@@ -71,7 +108,30 @@ async function render() {
 
   vegaEmbed("#view3", vlSpec3).then((result) => {
     result.view.run();
-  });
+  });*/
+
+
+  
+    // Visualization 3: Simple Grouped Bar Chart for Regional Sales vs Platform
+    const vlSpec3 = vl
+      .markBar()
+      .data(data)
+      .encode(
+        vl.x().fieldN('Platform').title('Platform'),  // Platforms on x-axis
+        vl.y().fieldQ('NA_Sales').aggregate('sum').title('NA Sales (in millions)'),  // NA Sales
+        vl.color().fieldN('Platform').title('Platform')  // Color by platform
+      )
+      .width(800)
+      .height(400)
+      .toSpec();
+  
+    vegaEmbed("#view3", vlSpec3).then((result) => {
+      result.view.run();
+    });
+  
+  
+
+
 
   // Visualization 4: Japan Sales by Genre
   const vlSpec4 = vl
@@ -89,8 +149,7 @@ async function render() {
     result.view.run();
   });
 
-
-
+  
 
 }
 
