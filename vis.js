@@ -12,13 +12,19 @@ async function render() {
     Other_Sales: +d.Other_Sales  // Convert to number
   }));
 
+  // Filter out rows where any sales data is invalid (NaN or 0)
+  const filteredData = data.filter(d => 
+    !isNaN(d.NA_Sales) && !isNaN(d.EU_Sales) && !isNaN(d.JP_Sales) && !isNaN(d.Other_Sales) &&
+    d.NA_Sales > 0 && d.EU_Sales > 0 && d.JP_Sales > 0 && d.Other_Sales > 0
+  );
+
    // Log the data to confirm the conversion worked
    console.log("Converted Data:", data);
 
 
 
   // Visualization 1: Global Sales by Genre and Platform
-  /*
+  
   const vlSpec1 = vl
   .markBar()
   .data(data)
@@ -34,10 +40,10 @@ async function render() {
   vegaEmbed("#view1", vlSpec1).then((result) => {
   result.view.run();
   });
-  */
+  
 
   // Visualization 2: Sales Over Time by Platform and Genre
-/*
+
   const vlSpec2 = vl
   .markLine()
   .data(data)
@@ -54,47 +60,43 @@ async function render() {
   vegaEmbed("#view2", vlSpec2).then((result) => {
     result.view.run();
   });
-*/
-  // Visualization 3: Regional Sales vs Platform
-  /*
-  const vlSpec3 = vl
-    .markBar()
-    .data(data)
-    .encode(
-      vl.x().fieldN("Platform").sort("-x"),
-      vl.y().fieldQ("NA_Sales").aggregate("sum").title("Sales in Millions"),
-      vl.color().fieldN("Platform")
-    )
-    .width(800)
-    .height(400)
-    .toSpec();
-
-  vegaEmbed("#view3", vlSpec3).then((result) => {
-    result.view.run();
-  });*/
-
 
   
-  
-  // Visualization 3: Simple Grouped Bar Chart for NA and EU Sales
-  // Visualization 3: Regional Sales vs Platform (Grouped Bar Chart)
 
-  // Visualization 3: Simple Grouped Bar Chart for NA and EU Sales
+  // Visualization 3: Grouped Bar Chart for Regional Sales vs Platform
   const vlSpec3 = vl
     .layer(
       // NA Sales
       vl.markBar({ color: 'blue' })
+        .data(filteredData)
         .encode(
           vl.x().fieldN('Platform').title('Platform'),
-          vl.y().fieldQ('NA_Sales').title('Sales in Millions'),  // Correct axis title placement
+          vl.y().fieldQ('NA_Sales').title('Sales (in millions)'),
           vl.tooltip([vl.fieldN('Platform'), vl.fieldQ('NA_Sales')])
         ),
       // EU Sales
       vl.markBar({ color: 'red' })
+        .data(filteredData)
         .encode(
           vl.x().fieldN('Platform').title('Platform'),
-          vl.y().fieldQ('EU_Sales').title('Sales in Millions'),  // Correct axis title placement
+          vl.y().fieldQ('EU_Sales').title('Sales (in millions)'),
           vl.tooltip([vl.fieldN('Platform'), vl.fieldQ('EU_Sales')])
+        ),
+      // JP Sales
+      vl.markBar({ color: 'green' })
+        .data(filteredData)
+        .encode(
+          vl.x().fieldN('Platform').title('Platform'),
+          vl.y().fieldQ('JP_Sales').title('Sales (in millions)'),
+          vl.tooltip([vl.fieldN('Platform'), vl.fieldQ('JP_Sales')])
+        ),
+      // Other Sales
+      vl.markBar({ color: 'orange' })
+        .data(filteredData)
+        .encode(
+          vl.x().fieldN('Platform').title('Platform'),
+          vl.y().fieldQ('Other_Sales').title('Sales (in millions)'),
+          vl.tooltip([vl.fieldN('Platform'), vl.fieldQ('Other_Sales')])
         )
     )
     .width(800)
@@ -110,7 +112,7 @@ async function render() {
 
 
   // Visualization 4: Japan Sales by Genre
-  /*
+  
   const vlSpec4 = vl
     .markBar({ color: "purple" })
     .data(data)
@@ -125,7 +127,7 @@ async function render() {
   vegaEmbed("#view4", vlSpec4).then((result) => {
     result.view.run();
   });
-*/
+
   
 
 }
