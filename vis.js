@@ -56,28 +56,6 @@ async function render() {
 
   
   // Visualization 2: Interactive Sales Over Time by Platform and Genre
-  
-  // Visualization 2: Stacked Area Chart with Correct Year Formatting
-  /*
-  const vlSpec2 = vl
-    .markArea({ line: true })  // Stacked area chart with line borders
-    .data(filteredData)
-    .encode(
-      vl.x().fieldT('Year').title('Year').axis({ format: '%Y', tickCount: 10 }),  // Properly formatted year
-      vl.y().fieldQ('Global_Sales').aggregate('sum').title('Global Sales (in millions)'),  // Sales on y-axis
-      vl.color().fieldN('Platform').scale({ scheme: 'category20' }).title('Platform'),  // Unique color for each platform
-      vl.detail().fieldN('Genre').title('Genre'),  // Label genres
-      vl.tooltip([vl.fieldN('Platform'), vl.fieldN('Genre'), vl.fieldQ('Global_Sales')])  // Tooltip with platform, genre, and sales
-    )
-    .width(800)
-    .height(400)
-    .toSpec();
-
-  // Embed the visualization in the specified div (view2)
-  vegaEmbed("#view2", vlSpec2).then((result) => {
-    result.view.run();
-  });
-  */
 
   const vlSpec2 = vl
     .markArea({ line: true })  // Stacked area chart with line borders
