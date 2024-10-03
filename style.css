@@ -1,9 +1,10 @@
+/* trying out code*/
 .container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 50%;
+    width: 100%;
 }
 
 body {
@@ -15,4 +16,10 @@ body {
     width: 100%;
     height: 100%;
     max-width: 800px;
+}
+#view1, #view2, #view3, #view4 {
+    width: 100%;
+    height: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
 }
