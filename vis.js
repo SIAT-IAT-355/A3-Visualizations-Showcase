@@ -32,69 +32,73 @@ async function render() {
     { Platform: d.Platform, Region: 'Other_Sales', Sales: d.Other_Sales }
   ]);
 
+  const filteredDatayear = data.filter(d => !isNaN(d.Year) && d.Year > 1900); 
 
 
   // Visualization 1: Global Sales by Genre and Platform
   
   const vlSpec1 = vl
-  .markBar()
-  .data(data)
-  .encode(
-    vl.x().fieldN("Genre").sort("-y").title("Genre"),
-    vl.y().fieldQ("Global_Sales").aggregate("sum").title("Global Sales (in millions)"),
-    vl.color().fieldN("Platform").title("Platform")
-  )
-  .width(800)
-  .height(400)
-  .toSpec();
+    .markBar()
+    .data(data)
+    .encode(
+      vl.x().fieldN("Genre").sort("-y").title("Genre"),
+      vl.y().fieldQ("Global_Sales").aggregate("sum").title("Global Sales (in millions)"),
+      vl.color().fieldN("Platform").title("Platform")
+    )
+    .width(800)
+    .height(400)
+    .toSpec();
 
   vegaEmbed("#view1", vlSpec1).then((result) => {
   result.view.run();
   });
   
 
-  // Visualization 2: Sales Over Time by Platform and Genre
-/*
-  const vlSpec2 = vl
-  .markLine()
-  .data(data)
-  .encode(
-    vl.x().fieldT("Year").title("Year"),
-    vl.y().fieldQ("Global_Sales").aggregate("sum").title("Global Sales (in millions)"),
-    vl.color().fieldN("Platform").title("Platform"),
-    vl.detail().fieldN("Genre").title("Genre")
-  )
-  .width(800)
-  .height(400)
-  .toSpec();
-
-  vegaEmbed("#view2", vlSpec2).then((result) => {
-    result.view.run();
-  });
-*/
+  
   // Visualization 2: Interactive Sales Over Time by Platform and Genre
+  
+  // Visualization 2: Stacked Area Chart with Correct Year Formatting
+  /*
   const vlSpec2 = vl
-  .markLine()
-  .data(data)
-  .encode(
-    vl.x().fieldT('Year').title('Year'),  // Year on x-axis
-    vl.y().fieldQ('Global_Sales').aggregate('sum').title('Global Sales (in millions)'),  
-    // Global Sales on y-axis
-    vl.color().fieldN('Platform').title('Platform'),  // Color by platform
-    vl.tooltip([vl.fieldN('Platform'), vl.fieldN('Genre'), vl.fieldQ('Global_Sales')]),  
-    // Tooltip with platform, genre, and sales
-    vl.detail().fieldN('Genre')  // Distinguish by Genre
-  )
-  .select(vl.selectSingle('highlight').encodings('color'))  // Add interactivity: highlight on selection
-  .width(800)
-  .height(400)
-  .toSpec();
+    .markArea({ line: true })  // Stacked area chart with line borders
+    .data(filteredData)
+    .encode(
+      vl.x().fieldT('Year').title('Year').axis({ format: '%Y', tickCount: 10 }),  // Properly formatted year
+      vl.y().fieldQ('Global_Sales').aggregate('sum').title('Global Sales (in millions)'),  // Sales on y-axis
+      vl.color().fieldN('Platform').scale({ scheme: 'category20' }).title('Platform'),  // Unique color for each platform
+      vl.detail().fieldN('Genre').title('Genre'),  // Label genres
+      vl.tooltip([vl.fieldN('Platform'), vl.fieldN('Genre'), vl.fieldQ('Global_Sales')])  // Tooltip with platform, genre, and sales
+    )
+    .width(800)
+    .height(400)
+    .toSpec();
 
   // Embed the visualization in the specified div (view2)
   vegaEmbed("#view2", vlSpec2).then((result) => {
-  result.view.run();
+    result.view.run();
   });
-  
+  */
+
+  const vlSpec2 = vl
+    .markArea({ line: true })  // Stacked area chart with line borders
+    .data(filteredData)
+    .encode(
+      vl.x().fieldQ('Year').title('Year').axis({ tickCount: 10 }),  // Treat Year as a quantitative field
+      vl.y().fieldQ('Global_Sales').aggregate('sum').title('Global Sales (in millions)'),  // Sales on y-axis
+      vl.color().fieldN('Platform').scale({ scheme: 'category20' }).title('Platform'),  // Unique color for each platform
+      vl.detail().fieldN('Genre').title('Genre'),  // Label genres
+      vl.tooltip([vl.fieldN('Platform'), vl.fieldN('Genre'), vl.fieldQ('Global_Sales')])  // Tooltip with platform, genre, and sales
+    )
+    .width(800)
+    .height(400)
+    .toSpec();
+
+// Embed the visualization in the specified div (view2)
+vegaEmbed("#view2", vlSpec2).then((result) => {
+    result.view.run();
+});
+
+
  // Visualization 3: Grouped Bar Chart for Regional Sales vs Platform with Legend
  const vlSpec3 = vl
  .markBar()
