@@ -114,20 +114,43 @@ async function render() {
   
     // Visualization 3: Simple Grouped Bar Chart for Regional Sales vs Platform
     const vlSpec3 = vl
-      .markBar()
-      .data(data)
-      .encode(
-        vl.x().fieldN('Platform').title('Platform'),  // Platforms on x-axis
-        vl.y().fieldQ('NA_Sales').aggregate('sum').title('NA Sales (in millions)'),  // NA Sales
-        vl.color().fieldN('Platform').title('Platform')  // Color by platform
-      )
-      .width(800)
-      .height(400)
-      .toSpec();
-  
-    vegaEmbed("#view3", vlSpec3).then((result) => {
-      result.view.run();
-    });
+    .layer(
+      // NA Sales
+      vl.markBar({ color: 'blue' })
+        .encode(
+          vl.x().fieldN('Platform').title('Platform'),
+          vl.y().fieldQ('NA_Sales').aggregate('sum').title('Sales (in millions)'),
+          vl.tooltip([vl.fieldN('Platform'), vl.fieldQ('NA_Sales').title('NA Sales')])
+        ),
+      // EU Sales
+      vl.markBar({ color: 'red' })
+        .encode(
+          vl.x().fieldN('Platform').title('Platform'),
+          vl.y().fieldQ('EU_Sales').aggregate('sum').title('Sales (in millions)'),
+          vl.tooltip([vl.fieldN('Platform'), vl.fieldQ('EU_Sales').title('EU Sales')])
+        ),
+      // JP Sales
+      vl.markBar({ color: 'green' })
+        .encode(
+          vl.x().fieldN('Platform').title('Platform'),
+          vl.y().fieldQ('JP_Sales').aggregate('sum').title('Sales (in millions)'),
+          vl.tooltip([vl.fieldN('Platform'), vl.fieldQ('JP_Sales').title('JP Sales')])
+        ),
+      // Other Sales
+      vl.markBar({ color: 'orange' })
+        .encode(
+          vl.x().fieldN('Platform').title('Platform'),
+          vl.y().fieldQ('Other_Sales').aggregate('sum').title('Sales (in millions)'),
+          vl.tooltip([vl.fieldN('Platform'), vl.fieldQ('Other_Sales').title('Other Sales')])
+        )
+    )
+    .width(800)
+    .height(400)
+    .toSpec();
+
+  vegaEmbed("#view3", vlSpec3).then((result) => {
+    result.view.run();
+  });
   
   
 
