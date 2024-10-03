@@ -118,8 +118,6 @@ vegaEmbed("#view3", vlSpec3).then((result) => {
     result.view.run();
   });
 
-  
-
 }
 
 render();
